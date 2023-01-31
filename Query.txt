@@ -1,0 +1,68 @@
+2. Trovare il nome delle riviste che sono pubblicate dalle case editrici di Torino o di Bologna o di Palermo.
+
+    SELECT * FROM `Riviste` 
+    INNER JOIN `CasaEditrici` ON `Riviste`.`IDCasaEditrice` = `CasaEditrici`.`ID` 
+    WHERE `CasaEditrici`.`Nome` = 'Torino' OR `CasaEditrici`.`Nome` = 'Bologna' OR `CasaEditrici`.`Nome` = 'Palermo';
+
+
+3. Ordinare i risultati del punto 2) per nome della rivista decrescente (dalla Z alla A).
+
+    SELECT * FROM `Riviste` INNER JOIN `CasaEditrici` ON `Riviste`.`IDCasaEditrice` = `CasaEditrici`.`ID` 
+    WHERE `CasaEditrici`.`Nome` = 'Torino' OR `CasaEditrici`.`Nome` = 'Bologna' OR `CasaEditrici`.`Nome` = 'Palermo' 
+    ORDER BY `Riviste`.`Nome` DESC;
+
+
+4. Trovare il nome e cognome delle persone che sono nate dopo il 1 gennaio 1980.
+
+    SELECT `Persone`.`Nome`, `Persone`.`Cognome`, `Persone`.`DataNascita` FROM `Persone` 
+    WHERE `DataNascita` > '1980/01/01';
+
+
+5. Trovare il nome e cognome delle persone che sono nate tra il 1 gennaio 1980 e il 31 dicembre
+1990.
+
+    SELECT `Persone`.`Nome`, `Persone`.`Cognome` FROM `Persone` 
+    WHERE `DataNascita` BETWEEN '1980/01/01' AND '1990/12/31';
+
+
+6. Trovare il nome e cognome delle persone che sono abbonate sia alle riviste di Torino sia a quelle di
+Palermo. 
+
+    SELECT `p`.`Nome`, `p`.`Cognome` FROM `persone` `p` 
+    INNER JOIN `Abbonamenti` `a` ON `p`.`ID` = `a`.`IDPersona` 
+    INNER JOIN `Riviste` `r` ON `a`.`IDRivista` = `r`.`ID` 
+    INNER JOIN `CasaEditrici` `c` ON `r`.`IDCasaEditrice` = `c`.`ID` 
+    WHERE `c`.`Comune` = 'Torino' AND `c`.`Comune` = 'Palermo';
+
+
+7. Trovare il nome e cognome delle persone che sono abbonante alla rivista con Nome ‘Focus’ e che
+non sono mai state abbonate alla rivista ‘La Scienza’.
+
+    SELECT `p`.`Nome`, `p`.`Cognome` FROM `persone` `p` 
+    INNER JOIN `abbonamenti` `a` ON `p`.`ID` = `a`.`IDPersona` 
+    INNER JOIN `Riviste` `r` ON `a`.`IDRivista` = `r`.`ID` 
+    WHERE `r`.`Nome` = 'Focus' AND `r`.`Nome` != 'La Scienza';
+
+
+8. Trovare il nome delle riviste con più di 10 abbonati.
+
+    SELECT COUNT(`r`.`Nome`) `count`, `r`.`Nome` FROM `Riviste` `r` 
+    INNER JOIN `Abbonamenti` `a` ON `r`.`ID` = `a`.`IDRivista` 
+    GROUP BY `a`.`IDRivista` 
+    HAVING COUNT(`r`.`Nome`) > 10;
+
+
+9. Trovare il nome, cognome e data nascita delle persone che hanno un solo abbonamento ordinate
+per data di nascita crescente (dal più vecchio al più giovane).
+
+    SELECT COUNT(`p`.`Nome`) `count`, `p`.`Nome` FROM `persone` `p` 
+    INNER JOIN `Abbonamenti` `a` ON `p`.`ID` = `a`.`IDPersona` 
+    GROUP BY `a`.`IDPersona` 
+    HAVING COUNT(`p`.`Nome`) = 1;
+
+10. Trovare il nome e cognome delle persone che non hanno mai sottoscritto un abbonamento.
+
+    SELECT `p`.`Nome`, `p`.`Cognome`, `p`.`DataNascita` FROM `persone` `p` 
+    INNER JOIN `Abbonamenti` `a` ON `p`.`ID` = `a`.`IDPersona` 
+    GROUP BY `a`.`IDPersona` 
+    HAVING COUNT(`p`.`Nome`) = 1;
